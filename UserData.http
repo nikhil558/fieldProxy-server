@@ -1,0 +1,23 @@
+POST http://localhost:3000/results
+Content-Type: application/json
+
+
+
+{
+    "name":"Nikhil",
+    "first":"first",
+    "second":"second",
+    "third":"third",
+    "fourth":"fourth",
+    "fifth":"fifth",
+    "sixth":"sixth",
+    "seventh":"seventh",
+    "eight":"eight",
+    "ninth":"ninth",
+    "tenth":"tenth",
+    "result":"result",
+    "score":9
+}
+
+###
+GET http://localhost:3000/history
