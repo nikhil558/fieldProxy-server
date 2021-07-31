@@ -43,11 +43,13 @@ app.post("/results", async (request, response) => {
     tenth,
     result,
     score,
+    category,
+    level,
   } = request.body;
 
   const createUserQuery = `
      INSERT INTO
-      User (name,first,second,third,fourth,fifth,sixth,seventh,eight,ninth,tenth,result,score)
+      User (name,first,second,third,fourth,fifth,sixth,seventh,eight,ninth,tenth,result,score,category,level)
      VALUES
       (
        '${name}',
@@ -62,7 +64,9 @@ app.post("/results", async (request, response) => {
        '${ninth}',  
        '${tenth}',
        '${result}',
-       '${score}'
+       '${score}',
+       '${category}',
+       '${level}'
       );`;
 
   await db.run(createUserQuery);
