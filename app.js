@@ -3,6 +3,8 @@ const path = require("path");
 const cors = require("cors");
 const { open } = require("sqlite");
 const sqlite3 = require("sqlite3");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -48,15 +50,26 @@ app.post("/add", async (request, response) => {
   response.send("User created successfully");
 });
 
-app.get("/login", async (request, response) => {
-  const getUserQuery = `
-  SELECT 
-  * 
-  FROM 
-  Users;`;
+app.post("/login", async (request, response) => {
+  const { username, password } = request.body;
+  const selectUserQuery = `SELECT * FROM Users WHERE name = '${username}';`;
+  const databaseUser = await db.get(selectUserQuery);
 
-  const getData = await db.all(getUserQuery);
-  response.send(getData.map((each) => each));
+  if (databaseUser === undefined) {
+    response.status(400);
+    response.send("Invalid user");
+  } else {
+    if (databaseUser.password === password) {
+      const payload = { name: username, password: password };
+
+      const jwtToken = jwt.sign(payload, "nikhil");
+
+      response.send({ jwtToken });
+    } else {
+      response.status(400);
+      response.send("Invalid password");
+    }
+  }
 });
 
 app.get("/appointments", async (request, response) => {
