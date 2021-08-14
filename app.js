@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const dbPath = path.join(__dirname, "UserData.db");
+const dbPath = path.join(__dirname, "UsersData.db");
 
 let db = null;
 
@@ -28,58 +28,56 @@ const initializeDBAndServer = async () => {
 
 initializeDBAndServer();
 
-app.post("/results", async (request, response) => {
-  const {
-    name,
-    first,
-    second,
-    third,
-    fourth,
-    fifth,
-    sixth,
-    seventh,
-    eight,
-    ninth,
-    tenth,
-    result,
-    score,
-    category,
-    level,
-  } = request.body;
+app.post("/add", async (request, response) => {
+  const { title, id, date, time, isStarred, acceptance } = request.body;
 
   const createUserQuery = `
      INSERT INTO
-      User (name,first,second,third,fourth,fifth,sixth,seventh,eight,ninth,tenth,result,score,category,level)
+      Appointments (name,number,date,time,stared,acceptance)
      VALUES
       (
-       '${name}',
-       '${first}',
-       '${second}',
-       '${third}',
-       '${fourth}',  
-       '${fifth}',
-       '${sixth}',
-       '${seventh}',
-       '${eight}',
-       '${ninth}',  
-       '${tenth}',
-       '${result}',
-       '${score}',
-       '${category}',
-       '${level}'
+       '${title}',
+       '${id}',
+       '${date}',
+       '${time}',
+       '${isStarred}',
+       '${acceptance}'
       );`;
 
   await db.run(createUserQuery);
   response.send("User created successfully");
 });
 
-app.get("/history", async (request, response) => {
+app.get("/login", async (request, response) => {
   const getUserQuery = `
   SELECT 
   * 
   FROM 
-  User;`;
+  Users;`;
 
   const getData = await db.all(getUserQuery);
   response.send(getData.map((each) => each));
+});
+
+app.get("/appointments", async (request, response) => {
+  const getUserQuery = `
+  SELECT 
+  * 
+  FROM 
+  Appointments;`;
+
+  const getData = await db.all(getUserQuery);
+  response.send(getData.map((each) => each));
+});
+
+app.delete("/delete/:id", async (request, response) => {
+  const { id } = request.params;
+  const deleteQuery = `
+    DELETE 
+    FROM 
+    Appointments
+    WHERE
+    id=${id}`;
+  await db.run(deleteQuery);
+  response.send("Delete row successfully");
 });
