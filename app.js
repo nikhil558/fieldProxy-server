@@ -60,7 +60,7 @@ app.post("/login", async (request, response) => {
     response.send("Invalid user");
   } else {
     if (databaseUser.password === password) {
-      const payload = { name: username, password: password };
+      const payload = { username: username, password: password };
 
       const jwtToken = jwt.sign(payload, "nikhil");
 
@@ -90,7 +90,35 @@ app.delete("/delete/:id", async (request, response) => {
     FROM 
     Appointments
     WHERE
-    id=${id}`;
+    number=${id}`;
   await db.run(deleteQuery);
   response.send("Delete row successfully");
+});
+
+app.put("/updateStar", async (request, response) => {
+  const { isStared, id } = request.body;
+  const deleteQuery = `
+    UPDATE 
+    Appointments
+    SET
+    stared=${isStared}
+    WHERE 
+    number=${id}`;
+
+  await db.run(deleteQuery);
+  response.send("Update row successfully");
+});
+
+app.put("/updateAcceptance", async (request, response) => {
+  const { acceptance, id } = request.body;
+  const deleteQuery = `
+    UPDATE 
+    Appointments
+    SET
+    acceptance=${acceptance}
+    WHERE 
+    number=${id}`;
+
+  await db.run(deleteQuery);
+  response.send("Update row successfully");
 });
